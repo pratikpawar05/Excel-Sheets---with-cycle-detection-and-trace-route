@@ -61,12 +61,47 @@ copyBtn.addEventListener("click", (e) => {
   for (let i = strow; i <= endrow; i++) {
     let copyRow = [];
     for (let j = stcol; j <= endcol; j++) {
-      let cellProp = sheetDB[i][j];
+      let { ...cellProp } = sheetDB[i][j];
       copyRow.push(cellProp);
     }
     copyData.push(copyRow);
   }
   console.log(copyData);
+  defaultSelectedCellsUI();
+});
+
+cutBtn.addEventListener("click", (e) => {
+  if (rangeStorage.length < 2) return;
+
+  let [strow, stcol, endrow, endcol] = [
+    Math.min(rangeStorage[0][0], rangeStorage[1][0]),
+    Math.min(rangeStorage[0][1], rangeStorage[1][1]),
+    Math.max(rangeStorage[0][0], rangeStorage[1][0]),
+    Math.max(rangeStorage[0][1], rangeStorage[1][1]),
+  ];
+
+  copyBtn.click();
+  for (let i = strow; i <= endrow; i++) {
+    for (let j = stcol; j <= endcol; j++) {
+      let cell = document.querySelector(`.cell[rid="${i}"][cid="${j}"]`);
+
+      // DB
+      let cellProp = sheetDB[i][j];
+      cellProp.value = "";
+      cellProp.bold = false;
+      cellProp.italic = false;
+      cellProp.underline = false;
+      cellProp.fontSize = 14;
+      cellProp.fontFamily = "monospace";
+      cellProp.fontColor = "#000000";
+      cellProp.BGcolor = "#000000";
+      cellProp.alignment = "left";
+
+      // UI
+      cell.click();
+    }
+  }
+
   defaultSelectedCellsUI();
 });
 
@@ -86,13 +121,13 @@ pasteBtn.addEventListener("click", (e) => {
   for (let i = stRow, r = 0; i <= stRow + rowDiff; i++, r++) {
     for (let j = stCol, c = 0; j <= stCol + colDiff; j++, c++) {
       let cell = document.querySelector(`.cell[rid="${i}"][cid="${j}"]`);
-      console.log(cell);
+      // console.log(cell);
       if (!cell) continue;
 
       // DB
       let data = copyData[r][c];
       let cellProp = sheetDB[i][j];
-
+      //DB Update
       cellProp.value = data.value;
       cellProp.bold = data.bold;
       cellProp.italic = data.italic;
