@@ -89,7 +89,7 @@ function handleSheetActiveness(sheet) {
     handleSheetDB(sheetIdx);
     handleSheetProperties();
     handleSheetUI(sheet);
-    console.log(sheetDB);
+    // console.log(sheetDB);
   });
 }
 function createSheetDB() {

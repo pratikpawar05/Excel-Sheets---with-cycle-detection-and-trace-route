@@ -49,12 +49,20 @@ let copyData = [];
 copyBtn.addEventListener("click", (e) => {
   if (rangeStorage.length < 2) return;
   copyData = [];
+  // let [strow, stcol, endrow, endcol] = [
+  //   rangeStorage[0][0],
+  //   rangeStorage[0][1],
+  //   rangeStorage[1][0],
+  //   rangeStorage[1][1],
+  // ];
+
   let [strow, stcol, endrow, endcol] = [
-    rangeStorage[0][0],
-    rangeStorage[0][1],
-    rangeStorage[1][0],
-    rangeStorage[1][1],
+    Math.min(rangeStorage[0][0], rangeStorage[1][0]),
+    Math.min(rangeStorage[0][1], rangeStorage[1][1]),
+    Math.max(rangeStorage[0][0], rangeStorage[1][0]),
+    Math.max(rangeStorage[0][1], rangeStorage[1][1]),
   ];
+  // console.log([strow, stcol, endrow, endcol]);
 
   for (let i = strow; i <= endrow; i++) {
     let copyRow = [];
@@ -64,5 +72,6 @@ copyBtn.addEventListener("click", (e) => {
     }
     copyData.push(copyRow);
   }
+  console.log(copyData);
   defaultSelectedCellsUI();
 });
