@@ -147,10 +147,9 @@ height: calc( 100vh - 3rem - 3rem - 2rem - 3rem );
     display: flex;
 }
 .cell{
-    width: 5rem;
     height: 2rem;
+    width: 5rem;
     border: 1px solid #dfe4ea;
-    display: flex;
     outline: none;
 }
 /* ***************end: grid container*************/
