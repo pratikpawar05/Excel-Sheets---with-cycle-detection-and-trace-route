@@ -49,12 +49,6 @@ let copyData = [];
 copyBtn.addEventListener("click", (e) => {
   if (rangeStorage.length < 2) return;
   copyData = [];
-  // let [strow, stcol, endrow, endcol] = [
-  //   rangeStorage[0][0],
-  //   rangeStorage[0][1],
-  //   rangeStorage[1][0],
-  //   rangeStorage[1][1],
-  // ];
 
   let [strow, stcol, endrow, endcol] = [
     Math.min(rangeStorage[0][0], rangeStorage[1][0]),
@@ -74,4 +68,43 @@ copyBtn.addEventListener("click", (e) => {
   }
   console.log(copyData);
   defaultSelectedCellsUI();
+});
+
+pasteBtn.addEventListener("click", (e) => {
+  // Past cells data work
+  if (rangeStorage.length < 2) return;
+
+  let rowDiff = Math.abs(rangeStorage[0][0] - rangeStorage[1][0]);
+  let colDiff = Math.abs(rangeStorage[0][1] - rangeStorage[1][1]);
+
+  // Target
+  let address = addressBar.value;
+  let [stRow, stCol] = decodeRIDCIDFromAddress(address);
+
+  // r -> refers copydata row
+  // c -> refers copydata col
+  for (let i = stRow, r = 0; i <= stRow + rowDiff; i++, r++) {
+    for (let j = stCol, c = 0; j <= stCol + colDiff; j++, c++) {
+      let cell = document.querySelector(`.cell[rid="${i}"][cid="${j}"]`);
+      console.log(cell);
+      if (!cell) continue;
+
+      // DB
+      let data = copyData[r][c];
+      let cellProp = sheetDB[i][j];
+
+      cellProp.value = data.value;
+      cellProp.bold = data.bold;
+      cellProp.italic = data.italic;
+      cellProp.underline = data.underline;
+      cellProp.fontSize = data.fontSize;
+      cellProp.fontFamily = data.fontFamily;
+      cellProp.fontColor = data.fontColor;
+      cellProp.BGcolor = data.BGcolor;
+      cellProp.alignment = data.alignment;
+
+      // UI
+      cell.click();
+    }
+  }
 });
