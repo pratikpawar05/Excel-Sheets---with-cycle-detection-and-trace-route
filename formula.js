@@ -22,6 +22,7 @@ for (let i = 0; i < rows; i++) {
   }
 }
 
+// Formula Bar handling code - getting the formual fixed format i.e. ( expresion1 Artimatic operator expresion2 ) to updating UI is done here
 let formulaBar = document.querySelector(".formula-bar");
 formulaBar.addEventListener("keydown", async (e) => {
   let inputFormula = formulaBar.value;
@@ -34,9 +35,11 @@ formulaBar.addEventListener("keydown", async (e) => {
     }
     // for cycle detection(if any)
     addChildToParent(inputFormula, address);
-    if (updateChildrenCells(address)) {
+    let isGraphCyclic = updateChildrenCells(address);
+    // console.log(isGraphCyclic);
+    if (isGraphCyclic.cyclePresent === true) {
+      await formulaDetectionCyclicTracePath(isGraphCyclic.cyclePath);
       removeChildFromParent(inputFormula);
-      alert("Your Formula is forming a cycle(Cyclic formula)");
       return;
     }
 
@@ -49,7 +52,7 @@ formulaBar.addEventListener("keydown", async (e) => {
 });
 
 function removeChildFromParent(formula) {
-  console.log("formula: " + formula);
+  // console.log("formula: " + formula);
   let childAddress = addressBar.value;
   let encodedFormula = formula.split(" ");
   for (let i = 0; i < encodedFormula.length; i++) {
@@ -84,9 +87,11 @@ function updateChildrenCells(parentAddress) {
     evalStack
   );
   if (isGraphCyclic) {
-    console.log(pathVisited);
-    console.log("Stack:" + evalStack);
-    return true;
+    evalStack.push(parentAddress);
+    return {
+      cyclePath: evalStack,
+      cyclePresent: true,
+    };
   }
 
   for (let idx = evalStack.length - 2; idx >= 0; idx--) {
@@ -97,7 +102,10 @@ function updateChildrenCells(parentAddress) {
     setCellUIAndCellProp(evaluatedValue, formula, address);
   }
   // console.log(pathVisited);
-  return false;
+  return {
+    cyclePath: null,
+    cyclePresent: false,
+  };
 }
 // Get dependecy of each cell in the excel formula
 function topologicalSort(parentAddress, visited, pathVisited, evalStack) {
@@ -111,7 +119,11 @@ function topologicalSort(parentAddress, visited, pathVisited, evalStack) {
 
   for (let i = 0; i < children.length; i++) {
     let childAddress = children[i];
-    if (visited[childAddress] && pathVisited[childAddress]) return true;
+    if (visited[childAddress] && pathVisited[childAddress]) {
+      evalStack = [];
+      evalStack.push(childAddress);
+      return true;
+    }
 
     let response = topologicalSort(
       childAddress,
@@ -119,7 +131,10 @@ function topologicalSort(parentAddress, visited, pathVisited, evalStack) {
       pathVisited,
       evalStack
     );
-    if (response) return response;
+    if (response) {
+      evalStack.push(childAddress);
+      return true;
+    }
   }
   pathVisited[parentAddress] = false;
   evalStack.push(parentAddress);
