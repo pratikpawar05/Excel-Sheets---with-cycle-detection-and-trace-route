@@ -32,7 +32,7 @@ function handleSelectedCells(cell) {
     let rid = Number(cell.getAttribute("rid"));
     let cid = Number(cell.getAttribute("cid"));
     rangeStorage.push([rid, cid]);
-    console.log(rangeStorage);
+    // console.log(rangeStorage);
   });
 }
 function defaultSelectedCellsUI() {
@@ -66,7 +66,7 @@ copyBtn.addEventListener("click", (e) => {
     }
     copyData.push(copyRow);
   }
-  console.log(copyData);
+  // console.log(copyData);
   defaultSelectedCellsUI();
 });
 
