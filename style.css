@@ -94,6 +94,10 @@ width: 100%;
 .formula-bar {
     width: calc( 100vw - 5rem - 0.7rem - 0.7rem - 0.7rem );
 }
+.formula-bar::placeholder {
+    color: black;
+  }
+  
 .formula-actions-cont > input {
     border: none;
     outline: none;
